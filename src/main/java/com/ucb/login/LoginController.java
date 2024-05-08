@@ -21,56 +21,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
+import com.ucb.login.dto.ErrorResponse;
+import com.ucb.login.dto.LoginRequestDto;
+import com.ucb.login.dto.LoginResponseDto;
 
 @RestController
 public class LoginController implements ILoginApi {
-    
-    @GetMapping("/")
-    public String index() {
 
-        try {
-            throw new Exception("This is a test.");
-          } catch (Exception e) {
-            Sentry.captureException(e);
-          }
-        return "Greetings from Spring boot";
+    @Override
+    @PostMapping("/api/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
+        // Aquí deberías implementar la lógica para autenticar al usuario utilizando el servicio de autenticación
+        // authenticationService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+
+        // Por ahora, devolvemos una respuesta vacía para el ejemplo
+        LoginResponseDto responseDto = new LoginResponseDto();
+        return ResponseEntity.ok(responseDto);
     }
-
-    @GetMapping( value = "/products/{id}", produces = "application/json")
-    public ResponseEntity<UserDto> obtain(@PathVariable String id) {
-        
-        var product = new UserDto("abc@gmail.com", "abc123");
-        return ResponseEntity.ok(product);
-    }
-    
-    @PostMapping( value = "/products", produces = "application/json")
-    public ResponseEntity create(@RequestBody UserDto product) {
-
-        ObjectMapper mapper = new ObjectMapper();
-        String json;
-        try {
-            json = mapper.writeValueAsString(product);
-            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(VersionFlag.V7);
-            JsonSchema jsonSchema = factory.getSchema(LoginController.class.getClassLoader().getResourceAsStream("schemas/product.json"));
-            JsonNode jsonNode = mapper.readTree(json);
-            Set<ValidationMessage> errors = jsonSchema.validate(jsonNode); 
-
-            String errorsCombined = "";
-            for( ValidationMessage error: errors) {
-                errorsCombined += error.toString() +  "\n";
-            }
-
-            if(errors.size() > 0) {
-                return ResponseEntity.badRequest().body("Please fix your JSON!,\n"+errorsCombined);
-            }
-            return ResponseEntity.ok(product);
-
-        } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return ResponseEntity.ok(product);
-        }
-    }
-    
 }
+

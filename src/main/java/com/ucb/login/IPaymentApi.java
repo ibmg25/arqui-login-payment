@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.ucb.login.dto.ErrorResponse;
-import com.ucb.login.dto.LoginRequestDto;
-import com.ucb.login.dto.LoginResponseDto;
+import com.ucb.login.dto.PaymentDto;
+import com.ucb.login.dto.PaymentResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,28 +14,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-public interface ILoginApi {
+public interface IPaymentApi {
 
-    @Tag(name = "Authentication", description = "User login")
-    @Operation(summary = "User Login", description = "Endpoint to authenticate a user with email and password")
+    @Tag(name = "Payment", description = "Process payment")
+    @Operation(summary = "Process Payment", description = "Process a payment with credit card data")
     @ApiResponses(
         value = {
             @ApiResponse(
-                responseCode = "200", description = "Successful login",
+                responseCode = "200", description = "Payment processed successfully",
                 content = {
                     @Content(mediaType = "application/json",
-                             schema = @Schema(implementation = LoginResponseDto.class))
+                             schema = @Schema(implementation = PaymentResponseDto.class))
                 }
             ),
             @ApiResponse(
                 responseCode = "400", description = "Bad request",
-                content = {
-                    @Content(mediaType = "application/json",
-                             schema = @Schema(implementation = ErrorResponse.class))
-                }
-            ),
-            @ApiResponse(
-                responseCode = "401", description = "Unauthorized",
                 content = {
                     @Content(mediaType = "application/json",
                              schema = @Schema(implementation = ErrorResponse.class))
@@ -50,8 +43,7 @@ public interface ILoginApi {
             )
         }
     )
-    @PostMapping("/api/login")
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequest);
+    @PostMapping("/api/payment")
+    public ResponseEntity<PaymentResponseDto> processPayment(PaymentDto paymentRequest);
 
 }
-
